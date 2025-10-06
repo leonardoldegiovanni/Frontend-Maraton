@@ -65,7 +65,7 @@ async function handleSubmit() {
       await ciudadStore.createCiudad(formData.value)
     }
     emit('success')
-    formData.value = { nombre: '' }
+    formData.value = { nombre_ciudad: '' }
   } catch (error) {
     console.error('Error al guardar ciudad:', error)
   } finally {

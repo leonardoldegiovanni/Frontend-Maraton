@@ -20,7 +20,7 @@
           id="dni"
           v-model="formData.dni"
           type="text"
-          placeholder="12345678A"
+          placeholder="12345678"
           :class="{ 'input-error': errors.dni }"
         />
         <span v-if="errors.dni" class="error-message">{{ errors.dni }}</span>
@@ -58,7 +58,7 @@
         >
           <option value="">Selecciona una ciudad</option>
           <option v-for="ciudad in ciudadStore.ciudades" :key="ciudad.id" :value="ciudad.id">
-            {{ ciudad.nombre }}
+            {{ ciudad.nombre_ciudad }}
           </option>
         </select>
         <span v-if="errors.ciudadId" class="error-message">{{ errors.ciudadId }}</span>

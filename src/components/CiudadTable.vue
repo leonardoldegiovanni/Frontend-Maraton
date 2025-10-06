@@ -2,8 +2,8 @@
   <div class="table-container">
     <h2>Lista de Ciudades</h2>
 
-    <div v-if="ciudadStore.loading" class="loading">Cargando ciudades...</div>
-    <div v-else-if="ciudadStore.error" class="error">{{ ciudadStore.error }}</div>
+    <div v-if="ciudadStore.loading">Cargando ciudades...</div>
+    <div v-else-if="ciudadStore.error">Error: {{ ciudadStore.error }}</div>
     
     <div v-else>
       <table class="data-table">
@@ -17,7 +17,7 @@
         <tbody>
           <tr v-for="ciudad in ciudadStore.ciudades" :key="ciudad.id">
             <td>{{ ciudad.id }}</td>
-            <td>{{ ciudad.nombre }}</td>
+            <td>{{ ciudad.nombre_ciudad }}</td>
             <td class="actions">
               <button class="btn btn-small btn-edit" @click="$emit('edit', ciudad)">
                 Editar
@@ -45,8 +45,10 @@ defineEmits(['edit'])
 
 const ciudadStore = useCiudadStore()
 
-onMounted(() => {
-  ciudadStore.fetchCiudades()
+onMounted(async () => {
+  console.log('[v0] Cargando ciudades...')
+  await ciudadStore.fetchCiudades()
+  console.log('[v0] Ciudades cargadas:', ciudadStore.ciudades)
 })
 
 async function handleDelete(id) {
@@ -54,7 +56,7 @@ async function handleDelete(id) {
     try {
       await ciudadStore.deleteCiudad(id)
     } catch (error) {
-      alert('Error al eliminar la ciudad. Puede que tenga atletas asociados.')
+      alert('Error al eliminar la ciudad')
     }
   }
 }

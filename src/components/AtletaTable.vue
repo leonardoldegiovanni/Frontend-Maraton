@@ -2,8 +2,8 @@
   <div class="table-container">
     <h2>Lista de Atletas</h2>
 
-    <div v-if="atletaStore.loading" class="loading">Cargando atletas...</div>
-    <div v-else-if="atletaStore.error" class="error">{{ atletaStore.error }}</div>
+    <div v-if="atletaStore.loading || ciudadStore.loading">Cargando atletas...</div>
+    <div v-else-if="atletaStore.error">Error: {{ atletaStore.error }}</div>
     
     <div v-else>
       <table class="data-table">
@@ -27,7 +27,7 @@
             <td>{{ atleta.nombre }}</td>
             <td>{{ atleta.dni }}</td>
             <td>{{ atleta.tiempo }} min</td>
-            <td>{{ getCiudadNombre(atleta.ciudadId) }}</td>
+            <td>{{ atleta.ciudad?.nombre_ciudad || 'Desconocida' }}</td>
             <td class="actions">
               <button class="btn btn-small btn-edit" @click="$emit('edit', atleta)">
                 Editar
@@ -57,17 +57,18 @@ defineEmits(['edit'])
 const atletaStore = useAtletaStore()
 const ciudadStore = useCiudadStore()
 
-onMounted(() => {
-  atletaStore.fetchAtletas()
-  if (ciudadStore.ciudades.length === 0) {
-    ciudadStore.fetchCiudades()
-  }
+onMounted(async () => {
+  console.log('[v0] Cargando ciudades y atletas...')
+  
+  // Cargar ciudades primero
+  await ciudadStore.fetchCiudades()
+  console.log('[v0] Ciudades cargadas:', ciudadStore.ciudades)
+  
+  // Luego cargar atletas
+  await atletaStore.fetchAtletas()
+  console.log('[v0] Atletas cargados:', atletaStore.atletas)
 })
 
-function getCiudadNombre(ciudadId) {
-  const ciudad = ciudadStore.ciudades.find(c => c.id === ciudadId)
-  return ciudad ? ciudad.nombre : 'Desconocida'
-}
 
 function getPodiumClass(posicion) {
   if (posicion === 1) return 'podium-gold'
