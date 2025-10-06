@@ -8,12 +8,10 @@ export const useAtletaStore = defineStore('atleta', () => {
   const loading = ref(false)
   const error = ref(null)
 
-  // Atletas ordenados por posición
   const atletasOrdenados = computed(() => {
     return [...atletas.value].sort((a, b) => a.posicion - b.posicion)
   })
 
-  // Obtener todos los atletas
   async function fetchAtletas() {
     loading.value = true
     error.value = null
@@ -29,7 +27,6 @@ export const useAtletaStore = defineStore('atleta', () => {
     }
   }
 
-  // Crear un nuevo atleta
   async function createAtleta(atleta) {
         console.log('📤 Enviando atleta:', atleta)
     console.log('🌐 URL usada:', `${API_BASE_URL}/atleta`)
@@ -54,13 +51,12 @@ export const useAtletaStore = defineStore('atleta', () => {
     }
   }
 
-  // Actualizar un atleta
   async function updateAtleta(id, atleta) {
     loading.value = true
     error.value = null
     try {
       const response = await fetch(`${API_BASE_URL}/atleta/${id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(atleta)
       })
@@ -80,7 +76,6 @@ export const useAtletaStore = defineStore('atleta', () => {
     }
   }
 
-  // Eliminar un atleta
   async function deleteAtleta(id) {
     loading.value = true
     error.value = null

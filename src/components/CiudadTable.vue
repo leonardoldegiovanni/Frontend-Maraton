@@ -46,9 +46,9 @@ defineEmits(['edit'])
 const ciudadStore = useCiudadStore()
 
 onMounted(async () => {
-  console.log('[v0] Cargando ciudades...')
+  console.log('Cargando ciudades...')
   await ciudadStore.fetchCiudades()
-  console.log('[v0] Ciudades cargadas:', ciudadStore.ciudades)
+  console.log('Ciudades cargadas:', ciudadStore.ciudades)
 })
 
 async function handleDelete(id) {

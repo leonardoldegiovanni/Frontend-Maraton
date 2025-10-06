@@ -60,11 +60,9 @@ const ciudadStore = useCiudadStore()
 onMounted(async () => {
   console.log('[v0] Cargando ciudades y atletas...')
   
-  // Cargar ciudades primero
   await ciudadStore.fetchCiudades()
   console.log('[v0] Ciudades cargadas:', ciudadStore.ciudades)
   
-  // Luego cargar atletas
   await atletaStore.fetchAtletas()
   console.log('[v0] Atletas cargados:', atletaStore.atletas)
 })

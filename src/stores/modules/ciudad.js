@@ -57,14 +57,12 @@ export const useCiudadStore = defineStore('ciudad', () => {
   }
 }
 
-
-  // Actualizar una ciudad
   async function updateCiudad(id, ciudad) {
     loading.value = true
     error.value = null
     try {
       const response = await fetch(`${API_BASE_URL}/ciudad/${id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(ciudad)
       })
@@ -84,7 +82,6 @@ export const useCiudadStore = defineStore('ciudad', () => {
     }
   }
 
-  // Eliminar una ciudad
   async function deleteCiudad(id) {
     loading.value = true
     error.value = null

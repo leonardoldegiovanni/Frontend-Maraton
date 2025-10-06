@@ -1,7 +1,7 @@
 <template>
   <div class="form-container">
     <h2>{{ atleta ? 'Editar Atleta' : 'Nuevo Atleta' }}</h2>
-    
+
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
         <label for="nombre">Nombre:</label>
@@ -18,7 +18,7 @@
         <label for="dni">DNI:</label>
         <input
           id="dni"
-          v-model="formData.dni"
+          v-model.trim="formData.dni"
           type="text"
           placeholder="12345678"
           :class="{ 'input-error': errors.dni }"
@@ -26,6 +26,7 @@
         <span v-if="errors.dni" class="error-message">{{ errors.dni }}</span>
       </div>
 
+  
       <div class="form-group">
         <label for="tiempo">Tiempo (minutos):</label>
         <input
@@ -38,6 +39,7 @@
         <span v-if="errors.tiempo" class="error-message">{{ errors.tiempo }}</span>
       </div>
 
+ 
       <div class="form-group">
         <label for="posicion">Posición:</label>
         <input
@@ -49,6 +51,7 @@
         <span v-if="errors.posicion" class="error-message">{{ errors.posicion }}</span>
       </div>
 
+  
       <div class="form-group">
         <label for="ciudadId">Ciudad:</label>
         <select
@@ -57,7 +60,11 @@
           :class="{ 'input-error': errors.ciudadId }"
         >
           <option value="">Selecciona una ciudad</option>
-          <option v-for="ciudad in ciudadStore.ciudades" :key="ciudad.id" :value="ciudad.id">
+          <option
+            v-for="ciudad in ciudadStore.ciudades"
+            :key="ciudad.id"
+            :value="ciudad.id"
+          >
             {{ ciudad.nombre_ciudad }}
           </option>
         </select>
@@ -109,15 +116,35 @@ onMounted(() => {
   if (ciudadStore.ciudades.length === 0) {
     ciudadStore.fetchCiudades()
   }
-  
+
   if (props.atleta) {
-    formData.value = { ...props.atleta }
+    formData.value = {
+      id: props.atleta.id,
+      nombre: props.atleta.nombre,
+      dni: props.atleta.dni,
+      tiempo: props.atleta.tiempo,
+      posicion: props.atleta.posicion,
+      ciudadId: props.atleta.ciudad?.id || ''
+    }
   }
 })
+
+function verificarDniDuplicado(dni) {
+  const dniLimpio = String(dni).trim()
+  return atletaStore.atletas.some(a => {
+    if (props.atleta && a.id === props.atleta.id) return false
+    return String(a.dni).trim() === dniLimpio
+  })
+}
 
 async function handleSubmit() {
   const isValid = await validate(formData.value)
   if (!isValid) return
+
+  if (verificarDniDuplicado(formData.value.dni)) {
+    alert(`❌ Ya existe un atleta con el DNI ${formData.value.dni}`)
+    return
+  }
 
   loading.value = true
   try {
@@ -126,7 +153,9 @@ async function handleSubmit() {
     } else {
       await atletaStore.createAtleta(formData.value)
     }
+
     emit('success')
+    
     formData.value = {
       nombre: '',
       dni: '',
@@ -136,6 +165,7 @@ async function handleSubmit() {
     }
   } catch (error) {
     console.error('Error al guardar atleta:', error)
+    alert('Ocurrió un error al guardar el atleta. Verifica la consola para más detalles.')
   } finally {
     loading.value = false
   }
